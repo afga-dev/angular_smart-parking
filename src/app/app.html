@@ -1,0 +1,175 @@
+@if (!userService.isSignedUp()) {
+<div class="signin-page">
+  <!-- Sign in -->
+  <main class="d-flex align-items-center justify-content-center h-100">
+    <section class="card p-4 bg-white" style="max-width: 400px; width: 100%">
+      <h2 class="text-center">Welcome back</h2>
+      <p class="text-center text-muted">Please sign in to continue</p>
+      <hr />
+      <form [formGroup]="signinForm" (ngSubmit)="onSignin()" novalidate>
+        <!-- Alerts -->
+        @if (signinError()) {
+        <div
+          class="alert alert-danger alert-dismissible fade show"
+          role="alert"
+        >
+          {{ signinError() }}
+          <button
+            type="button"
+            class="btn-close"
+            (click)="signinError.set(null)"
+            aria-label="close"
+          ></button>
+        </div>
+        }
+        <!-- Email -->
+        <div class="mb-3">
+          <label for="emailId" class="form-label">Email</label>
+          <div class="input-group">
+            <span class="input-group-text border-secondary">
+              <i class="bi bi-envelope"></i>
+            </span>
+            <input
+              type="emailId"
+              class="form-control text-dark border-secondary"
+              id="emailId"
+              placeholder="Enter your email"
+              formControlName="emailId"
+              autocomplete="emailId"
+              aria-label="emailId"
+            />
+          </div>
+          @if (hasError('emailId', 'required')) {
+          <span class="text-danger" aria-live="polite">
+            Email is required.
+          </span>
+          } @if (hasError('emailId', 'email')) {
+          <span class="text-danger" aria-live="polite">
+            Email must be valid.
+          </span>
+          }
+        </div>
+        <!-- Password -->
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <div class="input-group">
+            <span class="input-group-text border-secondary">
+              <i class="bi bi-lock" aria-hidden="true"></i>
+            </span>
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              class="form-control text-dark border-secondary"
+              id="password"
+              placeholder="Enter password"
+              formControlName="password"
+              autocomplete="current-password"
+              aria-label="Password"
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              (click)="togglePassword()"
+              [attr.aria-label]="
+                showPassword ? 'Hide password' : 'Show password'
+              "
+              aria-label="Toggle password visibility"
+            >
+              <i
+                [ngClass]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"
+                aria-hidden="true"
+              ></i>
+            </button>
+          </div>
+          @if (hasError('password', 'required')) {
+          <span class="text-danger" aria-live="polite">
+            Password is required.
+          </span>
+          }
+        </div>
+        <div class="d-grid mt-3">
+          <button
+            type="submit"
+            class="btn btn-dark"
+            [disabled]="signinForm.invalid"
+          >
+            Sign in
+          </button>
+        </div>
+      </form>
+    </section>
+  </main>
+</div>
+} @else {
+<div class="with-navbar">
+  <!-- Navbar -->
+  <header>
+    <nav
+      class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top"
+      aria-label="Main navigation"
+    >
+      <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="/">
+          <i class="bi bi-car-front-fill me-2" aria-hidden="true"></i>
+          <span>API Smart Parking</span>
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarContent"
+          aria-controls="navbarContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a
+                class="nav-link active"
+                routerLink="/"
+                routerLinkActive="active"
+                [routerLinkActiveOptions]="{ exact: true }"
+                aria-current="page"
+                >Dashboard</a
+              >
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/report" routerLinkActive="active"
+                >Report</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                routerLink="/management"
+                routerLinkActive="active"
+                >Management</a
+              >
+            </li>
+          </ul>
+          <ul class="navbar-nav ms-auto align-items-center">
+            <li class="nav-item d-flex align-items-center">
+              <span class="me-3 text-white">{{
+                userService.isSignedUp()?.emailId
+              }}</span>
+              <a
+                class="nav-link px-3 rounded d-flex align-items-center"
+                (click)="userService.onSignout()"
+                aria-label="Sign out"
+              >
+                <i class="bi bi-box-arrow-right me-1"></i>
+                Sign out
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+  <main class="container-fluid">
+    <router-outlet />
+  </main>
+</div>
+}

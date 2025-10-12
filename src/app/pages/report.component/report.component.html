@@ -1,0 +1,80 @@
+@if(isLoading()) {
+<div class="d-flex justify-content-center py-4">
+  <div class="spinner-border text-dark" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+} @else {
+<div class="container-fluid py-4">
+  <label class="form-label fw-bold">Unavailable spots</label>
+  <!-- Search and Export PDF -->
+  <div class="d-flex align-items-center mb-4 report-controls">
+    <input
+      type="text"
+      class="form-control search-input me-2"
+      placeholder="Search..."
+      [ngModel]="searchTerm()"
+      (ngModelChange)="searchTerm.set($event)"
+    />
+    <button class="btn btn-dark export-btn" (click)="exportPDF()">
+      <i class="bi bi-file-earmark-pdf-fill"></i> Export PDF
+    </button>
+  </div>
+  <!-- Table -->
+  <div class="card shadow-sm rounded-3 overflow-hidden">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-dark">
+            <tr>
+              <th>Site</th>
+              <th>Building</th>
+              <th>Floor</th>
+              <th>VIN</th>
+              <th>Phone</th>
+            </tr>
+          </thead>
+          <tbody>
+            @if(paginatedParking(); as spots) { @for(spot of spots; track spot)
+            {
+            <tr>
+              <td>{{ spot.siteName }}</td>
+              <td>{{ spot.buildingName }}</td>
+              <td>{{ spot.floorNo }}</td>
+              <td>{{ spot.vehicleNo }}</td>
+              <td>{{ spot.custMobileNo }}</td>
+            </tr>
+            } } @else {
+            <tr>
+              <td colspan="5" class="text-center text-muted py-3">
+                No occupied spots.
+              </td>
+            </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <!-- Pagination -->
+  @if(totalPages() > 1) {
+  <nav class="mt-4">
+    <ul class="pagination justify-content-center mb-0">
+      <li class="page-item" [class.disabled]="currentPage() === 1">
+        <a class="page-link" (click)="goToPage(currentPage() - 1)">Previous</a>
+      </li>
+      <li
+        class="page-item"
+        *ngFor="let i of pages"
+        [class.active]="currentPage() === i"
+      >
+        <a class="page-link" (click)="goToPage(i)">{{ i }}</a>
+      </li>
+      <li class="page-item" [class.disabled]="currentPage() === totalPages()">
+        <a class="page-link" (click)="goToPage(currentPage() + 1)">Next</a>
+      </li>
+    </ul>
+  </nav>
+  }
+</div>
+}

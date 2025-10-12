@@ -1,0 +1,550 @@
+@if (isLoading()) {
+<div class="d-flex justify-content-center py-5">
+  <div class="spinner-border text-dark" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+</div>
+} @else {
+<div class="container-fluid py-4 management-container">
+  <div class="row g-3">
+    <!-- Left -->
+    <div class="col-lg-4 col-xl-4">
+      <div class="card shadow-sm h-100">
+        <div
+          class="card-header bg-dark text-white d-flex justify-content-between align-items-center"
+        >
+          <h6 class="mb-0 fw-bold">My sites</h6>
+          <button class="btn btn-sm btn-light" (click)="addSite()">
+            + Site
+          </button>
+        </div>
+        <div class="card-body tree-panel">
+          <input
+            type="text"
+            class="form-control form-control-sm mb-3"
+            placeholder="Search site..."
+          />
+          <ul class="list-unstyled mb-0">
+            <!-- Sites -->
+            @for (site of sites(); track site.siteId) {
+            <li class="mb-1">
+              <div
+                class="tree-node d-flex justify-content-between align-items-center"
+              >
+                <div class="d-flex align-items-center gap-1">
+                  <button
+                    class="btn btn-sm btn-link p-0"
+                    (click)="toggleSite(site)"
+                  >
+                    <i
+                      class="bi"
+                      [ngClass]="
+                        site.expanded
+                          ? 'bi-caret-down-fill'
+                          : 'bi-caret-right-fill'
+                      "
+                    ></i>
+                  </button>
+                  <span
+                    (click)="selectSite(site)"
+                    class="cursor-pointer fw-semibold"
+                    >{{ site.siteName }}</span
+                  >
+                </div>
+                <div class="btn-group btn-group-sm">
+                  <button
+                    class="btn btn-outline-primary"
+                    (click)="addBuilding(site)"
+                  >
+                    + Building
+                  </button>
+                  <button
+                    class="btn btn-outline-danger"
+                    (click)="openSiteDeleteModal(site)"
+                    [disabled]="hasFloors(site)"
+                  >
+                    - Delete
+                  </button>
+                </div>
+              </div>
+              <!-- Buildings -->
+              @if (site.expanded) {
+              <ul class="list-unstyled ps-3">
+                @for (building of filteredBuildings()(site.siteId); track
+                building.buildingId) {
+                <li class="mb-1">
+                  <div
+                    class="tree-node d-flex justify-content-between align-items-center"
+                  >
+                    <span
+                      (click)="selectBuilding(building)"
+                      class="cursor-pointer"
+                      >{{ building.buildingName }}</span
+                    >
+                    <div class="btn-group btn-group-sm">
+                      <button
+                        class="btn btn-outline-primary"
+                        (click)="addFloor(building)"
+                      >
+                        + Floor
+                      </button>
+                      <button
+                        class="btn btn-outline-danger"
+                        (click)="openBuildingDeleteModal(building)"
+                        disabled
+                      >
+                        - Delete
+                      </button>
+                    </div>
+                  </div>
+                  <!-- Floors -->
+                  <ul class="list-unstyled ps-3">
+                    @for (floor of filteredFloors()(building.buildingId); track
+                    floor.floorId) {
+                    <li>
+                      <div
+                        class="tree-node d-flex justify-content-between align-items-center"
+                      >
+                        <span
+                          (click)="selectFloor(floor)"
+                          class="cursor-pointer"
+                          >{{ floor.floorNo }}</span
+                        >
+                        <button
+                          class="btn btn-outline-danger btn-sm"
+                          (click)="openDeleteFloorModal(floor)"
+                        >
+                          - Delete
+                        </button>
+                      </div>
+                    </li>
+                    }
+                  </ul>
+                </li>
+                }
+              </ul>
+              }
+            </li>
+            }
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!-- Right -->
+    <div class="col-lg-8 col-xl-8">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-dark text-white">
+          <h6 class="mb-0 fw-bold">Details</h6>
+        </div>
+        <div class="card-body">
+          @if(responseSuccessful()) {
+          <div
+            class="alert alert-success alert-dismissible fade show"
+            role="alert"
+          >
+            {{ responseSuccessful() }}
+            <button
+              type="button"
+              class="btn-close"
+              (click)="responseSuccessful.set(null)"
+              aria-label="close"
+            ></button>
+          </div>
+          } @if(responseError()) {
+          <div
+            class="alert alert-danger alert-dismissible fade show"
+            role="alert"
+          >
+            {{ responseError() }}
+            <button
+              type="button"
+              class="btn-close"
+              (click)="responseError.set(null)"
+              aria-label="close"
+            ></button>
+          </div>
+          }
+          <!-- Sites -->
+          @if ((selectedSite && !selectedBuilding && !selectedFloor) || (newSite
+          && !newBuilding && !newFloor)) { @if(selectedSite) {
+          <h5 class="fw-bold mb-3 text-dark">{{ selectedSite.siteName }}</h5>
+          } @else {
+          <h5 class="fw-bold mb-3 text-dark">New site</h5>
+          }
+          <div class="modal-body">
+            <form [formGroup]="siteForm">
+              <div class="mb-3">
+                <label class="form-label">Site name</label>
+                <div class="input-group">
+                  <span class="input-group-text border-secondary">
+                    <i class="bi bi-building-fill"></i>
+                  </span>
+                  <input
+                    type="text"
+                    class="form-control border-secondary"
+                    formControlName="siteName"
+                    placeholder="Enter the site name"
+                  />
+                </div>
+                @if (hasError('siteName', 'required')) {
+                <span class="text-danger" aria-live="polite">
+                  Site name required.
+                </span>
+                }
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Site city</label>
+                <div class="input-group">
+                  <span class="input-group-text border-secondary">
+                    <i class="bi bi-building-fill"></i>
+                  </span>
+                  <input
+                    type="text"
+                    class="form-control border-secondary"
+                    formControlName="siteCity"
+                    placeholder="Enter the site city"
+                  />
+                </div>
+                @if(hasError('siteCity', 'required')){
+                <span class="text-danger" aria-label="polite">
+                  Site city required.
+                </span>
+                }
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Site address</label>
+                <div class="input-group">
+                  <span class="input-group-text border-secondary">
+                    <i class="bi bi-building-fill"></i>
+                  </span>
+                  <input
+                    type="text"
+                    class="form-control border-secondary"
+                    formControlName="siteAddress"
+                    placeholder="Enter the site address"
+                  />
+                </div>
+                @if(hasError('siteAddress', 'required')) {
+                <span class="text-danger" aria-label="polite">
+                  Site address required.
+                </span>
+                }
+              </div>
+              <div class="mb-3">
+                <label class="form-label">PIN</label>
+                <div class="input-group">
+                  <span class="input-group-text border-secondary">
+                    <i class="bi bi-credit-card-fill"></i>
+                  </span>
+                  <input
+                    type="text"
+                    class="form-control border-secondary"
+                    formControlName="sitePinCode"
+                    placeholder="Enter the PIN"
+                  />
+                </div>
+                @if(hasError('sitePinCode', 'required')){
+                <span class="text-danger" aria-label="polite">
+                  PIN required.
+                </span>
+                }
+              </div>
+              <!-- Sites => buildings -->
+              @if(newSite) {
+              <div formArrayName="getVBuildingss">
+                @for (building of getVBuildingss.controls; track $index; let i =
+                $index) {
+                <div [formGroupName]="i">
+                  <div class="mb-3">
+                    <label class="form-label">Building name</label>
+                    <div class="input-group">
+                      <span class="input-group-text border-secondary">
+                        <i class="bi bi-building-fill-add"></i>
+                      </span>
+                      <input
+                        type="text"
+                        class="form-control border-secondary"
+                        formControlName="buildingName"
+                        placeholder="Enter the building name"
+                      />
+                    </div>
+                    @if(hasErrorInArray(buildingGroup(i), 'buildingName',
+                    'required')){
+                    <span class="text-danger" aria-label="polite">
+                      Building name required.
+                    </span>
+                    }
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Manager name</label>
+                    <div class="input-group">
+                      <span class="input-group-text border-secondary">
+                        <i class="bi bi-person-fill-add"></i>
+                      </span>
+                      <input
+                        type="text"
+                        class="form-control border-secondary"
+                        formControlName="buildingManagerName"
+                        placeholder="Enter the Manager's name"
+                      />
+                    </div>
+                    @if(hasErrorInArray(buildingGroup(i), 'buildingManagerName',
+                    'required')){
+                    <span class="text-danger" aria-label="polite">
+                      Manager name required.
+                    </span>
+                    }
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Contact number</label>
+                    <div class="input-group">
+                      <span class="input-group-text border-secondary">
+                        <i class="bi bi-telephone-fill"></i>
+                      </span>
+                      <input
+                        type="text"
+                        class="form-control border-secondary"
+                        formControlName="contactNo"
+                        placeholder="Enter the contact number"
+                      />
+                    </div>
+                    @if(hasErrorInArray(buildingGroup(i), 'contactNo',
+                    'required')){
+                    <span class="text-danger" aria-label="polite">
+                      Contact number required.
+                    </span>
+                    }
+                  </div>
+                </div>
+                }
+              </div>
+              }
+            </form>
+          </div>
+          <button
+            class="btn btn-success me-2"
+            [disabled]="siteForm.invalid"
+            (click)="onAddSite()"
+          >
+            Save
+          </button>
+          <button class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+          <!-- Buildings -->
+          } @else if ((selectedBuilding && !selectedFloor) || (newBuilding &&
+          !newFloor)) { @if(selectedBuilding) {
+          <h5 class="fw-bold mb-3 text-dark">
+            {{ selectedBuilding.buildingName }}
+          </h5>
+          } @else {
+          <h5 class="fw-bold mb-3 text-dark">New building</h5>
+          }
+          <div class="modal-body">
+            <form [formGroup]="siteForm">
+              <div formArrayName="getVBuildingss">
+                @for (building of getVBuildingss.controls; track $index; let i =
+                $index) {
+                <div [formGroupName]="i">
+                  <div class="mb-3">
+                    <label class="form-label">Building name</label>
+                    <div class="input-group">
+                      <span class="input-group-text border-secondary">
+                        <i class="bi bi-building-fill-add"></i>
+                      </span>
+                      <input
+                        type="text"
+                        class="form-control border-secondary"
+                        formControlName="buildingName"
+                        placeholder="Enter the building name"
+                      />
+                    </div>
+                    @if(hasErrorInArray(buildingGroup(i), 'buildingName',
+                    'required')){
+                    <span class="text-danger" aria-label="polite">
+                      Building name required.
+                    </span>
+                    }
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Manager name</label>
+                    <div class="input-group">
+                      <span class="input-group-text border-secondary">
+                        <i class="bi bi-person-fill-add"></i>
+                      </span>
+                      <input
+                        type="text"
+                        class="form-control border-secondary"
+                        formControlName="buildingManagerName"
+                        placeholder="Enter the Manager's name"
+                      />
+                    </div>
+                    @if(hasErrorInArray(buildingGroup(i), 'buildingManagerName',
+                    'required')){
+                    <span class="text-danger" aria-label="polite">
+                      Manager name required.
+                    </span>
+                    }
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Contact number</label>
+                    <div class="input-group">
+                      <span class="input-group-text border-secondary">
+                        <i class="bi bi-telephone-fill"></i>
+                      </span>
+                      <input
+                        type="text"
+                        class="form-control border-secondary"
+                        formControlName="contactNo"
+                        placeholder="Enter the contact number"
+                      />
+                    </div>
+                    @if(hasErrorInArray(buildingGroup(i), 'contactNo',
+                    'required')){
+                    <span class="text-danger" aria-label="polite">
+                      Contact number required.
+                    </span>
+                    }
+                  </div>
+                </div>
+                }
+              </div>
+            </form>
+          </div>
+          <button
+            class="btn btn-success me-2"
+            [disabled]="siteForm.invalid"
+            (click)="onAddBuilding()"
+          >
+            Save
+          </button>
+          <button class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+          <!-- Floors -->
+          } @else if (selectedFloor || newFloor) { @if(selectedFloor) {
+          <h5 class="fw-bold mb-3 text-dark">
+            {{ selectedFloor.floorNo }}
+          </h5>
+          } @else {
+          <h5 class="fw-bold mb-3 text-dark">New floor</h5>
+          }
+          <div class="modal-body">
+            <form [formGroup]="floorForm">
+              <div class="mb-3">
+                <label class="form-label">Floor name</label>
+                <div class="input-group">
+                  <span class="input-group-text border-secondary">
+                    <i class="bi bi-building-fill"></i>
+                  </span>
+                  <input
+                    type="text"
+                    class="form-control border-secondary"
+                    formControlName="floorNo"
+                    placeholder="Enter the floor name"
+                  />
+                </div>
+                @if (hasError('floorNo', 'required')) {
+                <span class="text-danger" aria-live="polite">
+                  Floor name required.
+                </span>
+                }
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Total parking spots</label>
+                <div class="input-group">
+                  <span class="input-group-text border-secondary">
+                    <i class="bi bi-building-fill"></i>
+                  </span>
+                  <input
+                    type="text"
+                    class="form-control border-secondary"
+                    formControlName="totalParkingSpots"
+                    placeholder="Enter the total parking spots"
+                  />
+                </div>
+                @if(hasError('totalParkingSpots', 'required')){
+                <span class="text-danger" aria-label="polite">
+                  Total parking spots required.
+                </span>
+                }
+              </div>
+            </form>
+          </div>
+          <button
+            class="btn btn-success me-2"
+            [disabled]="floorForm.invalid"
+            (click)="onAddFloor()"
+          >
+            Save
+          </button>
+          <button class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+          } @else {
+          <p class="text-muted">
+            Select a site, a building, or a floor to view its details.
+          </p>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal -->
+  @if(showDeleteModal()) {
+  <div
+    class="modal"
+    tabindex="-1"
+    role="dialog"
+    aria-modal="true"
+    (click)="closeDeleteModal()"
+  >
+    <div
+      class="modal-dialog modal-dialog-centered modal-sm"
+      (click)="$event.stopPropagation()"
+    >
+      <div class="modal-content">
+        <div class="modal-header">
+          @if(selectedSiteCRUD && !selectedBuildingCRUD && !selectedFloorCRUD) {
+          <h5 class="modal-title">Delete site</h5>
+          } @else if(selectedBuildingCRUD && !selectedFloorCRUD) {
+          <h5 class="modal-title">Delete building</h5>
+          } @else if(selectedFloorCRUD) {
+          <h5 class="modal-title">Delete floor</h5>
+          }
+          <button
+            type="button"
+            class="btn-close"
+            (click)="closeDeleteModal()"
+          ></button>
+        </div>
+        <div class="modal-body">
+          <p>
+            Are you sure you want to delete the @if(selectedSiteCRUD &&
+            !selectedBuildingCRUD && !selectedFloorCRUD) {
+            <strong>{{ selectedSiteCRUD.siteName }}</strong>
+            } @else if(selectedBuildingCRUD && !selectedFloorCRUD) {
+            <strong>{{ selectedBuildingCRUD.buildingName }}</strong>
+            } @else if(selectedFloorCRUD) {
+            <strong>{{ selectedFloorCRUD.floorNo }}</strong>
+            }?
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeDeleteModal()">
+            Cancel
+          </button>
+          @if(selectedSiteCRUD && !selectedBuildingCRUD && !selectedFloorCRUD) {
+          <button class="btn btn-danger" (click)="onDeleteSite()">
+            Delete
+          </button>
+          } @else if(selectedBuildingCRUD && !selectedFloorCRUD) {
+          <button class="btn btn-danger" (click)="onDeleteBuilding()">
+            Delete
+          </button>
+          } @else if(selectedFloorCRUD) {
+          <button class="btn btn-danger" (click)="onDeleteFloor()">
+            Delete
+          </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>
+}
