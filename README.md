@@ -1,59 +1,84 @@
-# 02APISmartParking
+<h3 align="center">SMART PARKING</h3>
+<p align="center">
+<a href="#features">Features</a> &nbsp;&bull;&nbsp;
+<a href="#tech-stack">Tech Stack</a> &nbsp;&bull;&nbsp;
+<a href="#api">API</a> &nbsp;&bull;&nbsp;
+<a href="#installation">Installation</a> &nbsp;&bull;&nbsp;
+<a href="#usage">Usage</a> &nbsp;&bull;&nbsp;
+<a href="#license">License</a>
+</p>
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.0.
+## About
+A web application designed for parking management, allowing users to efficiently control and monitor parking spaces within the sites, buildings, and floors assigned to them.
 
-## Development server
+Check out the live demo <a href="https://afga-smart-parking.netlify.app/" target="_blank">here</a>.
+> **Note:** For demo purposes, the API has a restriction on the number of concurrent users. Please use the following credentials: **user**: admin@gmail.com, **password**: admin.
 
-To start a local development server, run:
+## Features
+- **User authentication:** Users can log in and access only the sites, buildings, and floors they manage.    
+- **Dashboard:** View sites, buildings, and floors, and assign or release parking spots.    
+- **Statistics:** Track parking occupancy and usage metrics per floor.    
+- **Reports:** Generate a comprehensive list of all currently occupied parking spots, with the option to export to PDF.    
+- **CRUD management:** Full create, read, update, and delete operations for sites, buildings, and floors, giving users complete control over the resources they manage.
 
+## Tech Stack
+- **Frontend:** Angular
+- **Styling:** HTML, CSS, and Bootstrap
+
+## API
+The application uses a REST API for managing user accounts, sites, buildings, and floors.
+- **Base URL:** https://api.freeprojectapi.com/api/SmartParking/
+- **Endpoints:**
+  - `POST /login` – Log in a user
+  - `GET /GetAllSites/:id` – Get all sites by user
+  - `GET /GetBuildingBySiteId/:id` – Get all buildings by site
+  - `GET /GetFloorsByBuildingId/:id` – Get all floors by building
+  - `GET /GetAllParkingByFloor/:id` – Get all parking by floor
+  - `GET /GetAllParkingByClientId/:id` – Get all parking by user
+  - `POST /AddParking` – Create a new parking spot
+  - `POST /deleteParking/:id` – Delete a parking spot
+  - `POST /addClientSite/:site` – Create a new site
+  - `POST /updateSite/:site` – Update a site or building
+  - `POST /DeleteSite/:id` – Delete a site
+  - `POST /AddFloor/:floor` – Create a new floor
+  - `POST /UpdateFloor/:floor` – Update a floor
+  - `POST /DeleteFloor/:id` – Delete a floor
+> Make sure to have the API running before starting the application.
+
+## Installation
+1. Clone the repository:
 ```bash
-ng serve
+git clone https://github.com/<your-username>/angular_smart-parking.git
 ```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
+2. Navigate into the project folder:
 ```bash
-ng generate component component-name
+cd angular_smart-parking
 ```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
+3. Install dependencies:
 ```bash
-ng generate --help
+npm install
 ```
-
-## Building
-
-To build the project run:
-
+4. Start the development server:
 ```bash
-ng build
+npm start
 ```
+> The application should now be running at `http://localhost:4200/`. Make sure you have Node.js and Angular CLI installed.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Usage
+- **Log in:**
+  - Navigate to the login page and enter your credentials.
+- **Dashboard:**
+  - View all sites, buildings, and floors under your control.
+  - Assign a parking spot to a vehicle or release an occupied spot.  
+  - Check real-time statistics for each floor, such as occupancy rates.   
+- **Reports:**
+  - Access the reports page to view a list of all currently occupied parking spots.
+  - Export reports to PDF for offline review or sharing.
+- **CRUD Management (Sites, buildings, and floors):**
+  - Create new sites, buildings, or floors.
+  - Edit existing entries to update details.
+  - Delete resources that are no longer needed.
+  - Only users with permissions for a given site can manage its resources.
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## License
+This project is licensed under the MIT License. See the <a href="https://github.com/afga-dev/angular_smart-parking/blob/master/LICENSE.md" target="_blank">LICENSE</a> file for details.
