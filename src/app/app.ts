@@ -60,4 +60,9 @@ export class App implements OnInit {
       this.isSubmitting.set(false);
     }
   }
+
+  onSignOut() {
+    this.signinForm.reset();
+    this.userService.onSignout();
+  }
 }
