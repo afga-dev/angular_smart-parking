@@ -106,7 +106,7 @@ export class ManagementComponent implements OnInit {
     buildingId: [0],
     floorNo: ['', [Validators.required]],
     isOperational: [false],
-    totalParkingSpots: [0, [Validators.required]],
+    totalParkingSpots: [0, [Validators.required, Validators.pattern(/^\d+$/)]],
   });
 
   // Fetch sites, buildings, and floors from the API.
@@ -489,7 +489,8 @@ export class ManagementComponent implements OnInit {
 
   // Check if a form control has a specific validation error.
   hasError(controlName: string, error: string): boolean {
-    const control = this.siteForm.get(controlName);
+    const control =
+      this.siteForm.get(controlName) ?? this.floorForm.get(controlName);
     return !!(control?.touched && control?.hasError(error));
   }
 
