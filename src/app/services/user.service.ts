@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { UserInterface } from '../models/user.interface';
 import { API_URL } from '../app.config';
 import { HttpClient } from '@angular/common/http';
@@ -14,13 +14,21 @@ export class UserService {
   private baseUrl = inject(API_URL);
   private router = inject(Router);
 
-  isSignedUp = signal<UserInterface | null>(
-    JSON.parse(localStorage.getItem('response') || 'null')
-  );
+  isSignedUp = signal<UserInterface | null>(null);
+  isLoaded = signal<boolean>(false);
 
-  isSignedUpSet(response: UserInterface) {
-    localStorage.setItem('response', JSON.stringify(response));
-    this.isSignedUp.set(response);
+  async getUserFromLocalStorage() {
+    const storedId = localStorage.getItem('id');
+    if (storedId) {
+      const user = await firstValueFrom(this.getUser(Number(storedId)));
+      this.isSignedUp.set(user);
+    }
+    this.isLoaded.set(true);
+  }
+
+  isSignedUpSet(user: UserInterface) {
+    localStorage.setItem('id', user.userId.toString());
+    this.isSignedUp.set(user);
     this.router.navigateByUrl('/');
   }
 
@@ -31,8 +39,14 @@ export class UserService {
     );
   }
 
+  getUser(id: number): Observable<UserInterface> {
+    return this.httpClient.get<UserInterface>(
+      `${this.baseUrl}/getUserById?id=${id}`
+    );
+  }
+
   onSignout() {
-    localStorage.removeItem('response');
+    localStorage.removeItem('id');
     this.isSignedUp.set(null);
     this.router.navigateByUrl('/');
   }

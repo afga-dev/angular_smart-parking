@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { UserService } from './services/user.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -12,7 +12,7 @@ import { CommonModule } from '@angular/common';
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {
+export class App implements OnInit {
   userService = inject(UserService);
   private formBuilder = inject(FormBuilder);
 
@@ -25,6 +25,10 @@ export class App {
     emailId: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required]],
   });
+
+  ngOnInit(): void {
+    this.userService.getUserFromLocalStorage();
+  }
 
   togglePassword() {
     this.showPassword = !this.showPassword;

@@ -242,11 +242,10 @@ export class DashboardComponent implements OnInit {
       const refreshed = await firstValueFrom(
         this.clientService.getParking(this.selectedFloor)
       );
-      //I can't use update on the signal parkings because the API response on data is null :sadcrab:
       this.parkings.set(refreshed.data || []);
       this.closeReserveModal();
     } catch (err) {
-      //console.log(err);
+      // console.log(err);
     }
   }
 
@@ -272,7 +271,7 @@ export class DashboardComponent implements OnInit {
       this.parkings.update((spots) => spots.filter((p) => p.parkId !== parkId));
       this.closeReleaseModal();
     } catch (err) {
-      //console.log(err);
+      // console.log(err);
     }
   }
 }

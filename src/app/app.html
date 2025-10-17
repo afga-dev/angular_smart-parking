@@ -1,4 +1,4 @@
-@if (!userService.isSignedUp()) {
+@if(userService.isLoaded()){ @if (!userService.isSignedUp()) {
 <div class="signin-page">
   <!-- Sign in -->
   <main class="d-flex align-items-center justify-content-center h-100">
@@ -172,4 +172,4 @@
     <router-outlet />
   </main>
 </div>
-}
+} }

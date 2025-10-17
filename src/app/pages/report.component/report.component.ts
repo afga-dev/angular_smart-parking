@@ -79,7 +79,7 @@ export class ReportComponent implements OnInit {
       });
       this.parking.set(sortedSpots);
     } catch (err) {
-      //console.group(err);
+      // console.log(err);
     } finally {
       this.isLoading.set(false);
     }

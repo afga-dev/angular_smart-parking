@@ -109,7 +109,7 @@ export class ManagementComponent implements OnInit {
     totalParkingSpots: [0, [Validators.required]],
   });
 
-  //Fetch and set sites, buildings and floors.
+  // Fetch sites, buildings, and floors from the API.
   private async fetch(extraId: number) {
     const sitesResponse = await firstValueFrom(
       this.clientService.getSites(extraId)
@@ -197,7 +197,7 @@ export class ManagementComponent implements OnInit {
     await this.fetchAndSet(id, { setFirstExpanded: true });
   }
 
-  //Select a site, a building or a floor to update.
+  // Reset selection of site, building, or floor for update.
   private resetSelection(level: 'site' | 'building' | 'floor') {
     if (level === 'site' || level === 'building') {
       this.siteForm.reset();
@@ -250,7 +250,7 @@ export class ManagementComponent implements OnInit {
     this.setFloor(false);
   }
 
-  //Add a new site, building or floor to create.
+  // Prepare forms for adding a new site, building, or floor.
   private resetAdd(level: 'site' | 'building' | 'floor') {
     if (level === 'site' || level === 'building') {
       this.siteForm.reset();
@@ -307,7 +307,7 @@ export class ManagementComponent implements OnInit {
     this.setFloor(true);
   }
 
-  //Add or update a site, building or floor.
+  // Add or update a site, building or floor.
   async onAddSite() {
     const site: AddSiteInterface = this.siteForm.getRawValue();
 
@@ -383,7 +383,7 @@ export class ManagementComponent implements OnInit {
     }
   }
 
-  //Close the modal to delete sites, buildings or floors.
+  // Close the delete modal and clear selected items.
   closeDeleteModal() {
     this.showDeleteModal.set(false);
     this.selectedSiteCRUD = null;
@@ -391,7 +391,7 @@ export class ManagementComponent implements OnInit {
     this.selectedFloorCRUD = null;
   }
 
-  //Open the modal to delete sites, buildings or floors.
+  // Open the modal to delete sites, buildings or floors.
   openSiteDeleteModal(site: SiteInterface) {
     this.selectedSiteCRUD = site;
     this.showDeleteModal.set(true);
@@ -407,7 +407,7 @@ export class ManagementComponent implements OnInit {
     this.showDeleteModal.set(true);
   }
 
-  //Delete a site, a building or a floor.
+  // Delete a site, a building or a floor.
   async onDeleteSite() {
     if (!this.selectedSiteCRUD) return;
 
@@ -427,10 +427,14 @@ export class ManagementComponent implements OnInit {
     if (!this.selectedBuildingCRUD) return;
 
     try {
-      //Sadly there isn't an API Endpoint to delete buildings.
-      //After some consideration, I decided to disable the button to delete them but leave the code just in case
+      // Delete button is disabled as there is no API endpoint for buildings; code retained for potential future use.
+      // await firstValueFrom(
+      //   this.clientService.deleteBuilding(Number(this.selectedBuildingCRUD.buildingId))
+      // );
+      // this.updateSignals();
+      // this.closeDeleteModal();
     } catch (err) {
-      //console.log(err);
+      // console.log(err);
     }
   }
 
@@ -445,11 +449,11 @@ export class ManagementComponent implements OnInit {
       this.updateSignals();
       this.closeDeleteModal();
     } catch (err) {
-      //console.log(err);
+      // console.log(err);
     }
   }
 
-  //Cancel the changes on a site, a building or a floor.
+  // Cancel changes and reset forms for site, building, or floor.
   onCancel() {
     if (this.newSite || this.newBuilding) {
       this.siteForm.reset();
@@ -466,13 +470,13 @@ export class ManagementComponent implements OnInit {
     }
   }
 
-  //Collapse and expand utility.
+  // Toggle expansion state of a site.
   toggleSite(site: SiteInterface) {
     site.expanded = !site.expanded;
     this.sites.update((s) => [...s]);
   }
 
-  //Update the sites, buildings and floors signals.
+  // Update the sites, buildings and floors signals.
   async updateSignals() {
     const id = Number(this.userService.isSignedUp()?.extraId);
     if (!id) return;
@@ -483,7 +487,7 @@ export class ManagementComponent implements OnInit {
     });
   }
 
-  //Error handling.
+  // Check if a form control has a specific validation error.
   hasError(controlName: string, error: string): boolean {
     const control = this.siteForm.get(controlName);
     return !!(control?.touched && control?.hasError(error));
@@ -498,7 +502,7 @@ export class ManagementComponent implements OnInit {
     return this.getVBuildingss.at(i) as FormGroup;
   }
 
-  //Reset the selected or new actions on sites, buildings and floors.
+  // Reset the selected or new actions on sites, buildings and floors.
   resetSelected() {
     this.selectedSite = null;
     this.selectedBuilding = null;
@@ -517,7 +521,7 @@ export class ManagementComponent implements OnInit {
     this.responseError.set(null);
   }
 
-  //Miscellaneous actions on buildings and floors.
+  // Helper to build FormGroup for a building.
   private buildSiteFormGroup(building: BuildingInterface): FormGroup {
     return this.formBuilder.nonNullable.group({
       buildingId: [building.buildingId],
@@ -557,7 +561,7 @@ export class ManagementComponent implements OnInit {
     this.siteForm.setControl('getVBuildingss', buildingArray);
   }
 
-  //Forms for the sites, building and floors for adding or updating.
+  // Forms for the sites, building and floors for adding or updating.
   setSite(isNew: boolean) {
     if (isNew) {
       if (!this.newSite) return;
@@ -625,12 +629,12 @@ export class ManagementComponent implements OnInit {
     }
   }
 
-  //Access to VBuildingss from HTML.
+  // Access to VBuildingss from UI.
   get getVBuildingss(): FormArray {
     return this.siteForm.get('getVBuildingss') as FormArray;
   }
 
-  //Validators.
+  // Validators.
   setSiteValidators(isSite: boolean) {
     const controls = ['siteName', 'siteCity', 'siteAddress', 'sitePinCode'];
 
@@ -671,7 +675,7 @@ export class ManagementComponent implements OnInit {
     });
   }
 
-  //Utility to disable the delete button on sites if the site have at least one floor.
+  // Returns true if a site has floors; used to disable delete button for sites.
   hasFloors(site: SiteInterface): boolean {
     const siteBuildings = this.buildings().filter(
       (b) => b.siteId === site.siteId
