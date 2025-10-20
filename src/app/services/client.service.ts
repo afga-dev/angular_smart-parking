@@ -21,31 +21,31 @@ export class ClientService {
 
   getSites(id: number): Observable<SiteResponseInterface> {
     return this.httpClient.get<SiteResponseInterface>(
-      `${this.baseUrl}/GetAllSites?clientid=${id}`
+      `${this.baseUrl}/getallsites?clientid=${id}`
     );
   }
 
   getBuilding(id: number): Observable<BuildingResponseInterface> {
     return this.httpClient.get<BuildingResponseInterface>(
-      `${this.baseUrl}/GetBuildingBySiteId?id=${id}`
+      `${this.baseUrl}/getbuildingbysiteid?id=${id}`
     );
   }
 
   getFloor(id: number): Observable<FloorResponseInterface> {
     return this.httpClient.get<FloorResponseInterface>(
-      `${this.baseUrl}/GetFloorsByBuildingId?id=${id}`
+      `${this.baseUrl}/getfloorsbybuildingid?id=${id}`
     );
   }
 
   getParking(id: number): Observable<ParkingResponseInterface> {
     return this.httpClient.get<ParkingResponseInterface>(
-      `${this.baseUrl}/GetAllParkingByFloor?id=${id}`
+      `${this.baseUrl}/getallparkingbyfloor?id=${id}`
     );
   }
 
   getAllParking(id: number): Observable<ParkingResponseInterface> {
     return this.httpClient.get<ParkingResponseInterface>(
-      `${this.baseUrl}/GetAllParkingByClientId?id=${id}`
+      `${this.baseUrl}/getallparkingbyclientid?id=${id}`
     );
   }
 
@@ -53,56 +53,56 @@ export class ClientService {
     parking: AddParkingInterface
   ): Observable<ParkingResponseInterface> {
     return this.httpClient.post<ParkingResponseInterface>(
-      `${this.baseUrl}/AddParking`,
+      `${this.baseUrl}/addparking`,
       parking
     );
   }
 
   deleteParking(id: number): Observable<ParkingResponseInterface> {
     return this.httpClient.post<ParkingResponseInterface>(
-      `${this.baseUrl}/DeleteParking?id=${id}`,
+      `${this.baseUrl}/deleteparking?id=${id}`,
       null
     );
   }
 
   addSite(site: AddSiteInterface): Observable<SiteResponseInterface> {
     return this.httpClient.post<SiteResponseInterface>(
-      `${this.baseUrl}/addClientSite`,
+      `${this.baseUrl}/addclientsite`,
       site
     );
   }
 
   updateSite(site: AddSiteInterface): Observable<SiteResponseInterface> {
     return this.httpClient.post<SiteResponseInterface>(
-      `${this.baseUrl}/updateSite`,
+      `${this.baseUrl}/updatesite`,
       site
     );
   }
 
   deleteSite(id: number): Observable<SiteResponseInterface> {
     return this.httpClient.post<SiteResponseInterface>(
-      `${this.baseUrl}/DeleteSite?id=${id}`,
+      `${this.baseUrl}/deletesite?id=${id}`,
       null
     );
   }
 
   addFloor(floor: FloorInterface): Observable<FloorResponseInterface> {
     return this.httpClient.post<FloorResponseInterface>(
-      `${this.baseUrl}/AddFloor`,
+      `${this.baseUrl}/addfloor`,
       floor
     );
   }
 
   updateFloor(floor: FloorInterface): Observable<FloorResponseInterface> {
     return this.httpClient.post<FloorResponseInterface>(
-      `${this.baseUrl}/UpdateFloor`,
+      `${this.baseUrl}/updatefloor`,
       floor
     );
   }
 
   deleteFloor(id: number): Observable<FloorResponseInterface> {
     return this.httpClient.post<FloorResponseInterface>(
-      `${this.baseUrl}/DeleteFloor?id=${id}`,
+      `${this.baseUrl}/deletefloor?id=${id}`,
       null
     );
   }

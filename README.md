@@ -36,19 +36,20 @@ The application uses a REST API for managing user accounts, sites, buildings, an
 - **Base URL:** https://api.freeprojectapi.com/api/SmartParking
 - **Endpoints:**
   - `POST /login` – Log in a user
-  - `GET /GetAllSites/:id` – Get all sites by user
-  - `GET /GetBuildingBySiteId/:id` – Get all buildings by site
-  - `GET /GetFloorsByBuildingId/:id` – Get all floors by building
-  - `GET /GetAllParkingByFloor/:id` – Get all parking by floor
-  - `GET /GetAllParkingByClientId/:id` – Get all parking by user
-  - `POST /AddParking` – Create a new parking spot
-  - `POST /deleteParking/:id` – Delete a parking spot
-  - `POST /addClientSite/:site` – Create a new site
-  - `POST /updateSite/:site` – Update a site or building
-  - `POST /DeleteSite/:id` – Delete a site
-  - `POST /AddFloor/:floor` – Create a new floor
-  - `POST /UpdateFloor/:floor` – Update a floor
-  - `POST /DeleteFloor/:id` – Delete a floor
+  - `GET /getuserbyid/:id` – Get a single user
+  - `GET /getallsites/:id` – Get all sites by user
+  - `GET /getbuildingbysiteid/:id` – Get all buildings by site
+  - `GET /getfloorsbybuildingid/:id` – Get all floors by building
+  - `GET /getallparkingbyfloor/:id` – Get all parking by floor
+  - `GET /getallparkingbyclientid/:id` – Get all parking by user
+  - `POST /addparking` – Create a new parking spot
+  - `POST /deleteparking/:id` – Delete a parking spot
+  - `POST /addclientsite` – Create a new site
+  - `POST /updatesite` – Update a site or building
+  - `POST /deletesite/:id` – Delete a site
+  - `POST /addfloor` – Create a new floor
+  - `POST /updatefloor` – Update a floor
+  - `POST /deletefloor/:id` – Delete a floor
 
 > Make sure to have the API running before starting the application.
 

@@ -41,7 +41,7 @@ export class UserService {
 
   getUser(id: number): Observable<UserInterface> {
     return this.httpClient.get<UserInterface>(
-      `${this.baseUrl}/getUserById?id=${id}`
+      `${this.baseUrl}/getuserbyid?id=${id}`
     );
   }
 
