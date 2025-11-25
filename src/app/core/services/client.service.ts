@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SiteResponseInterface } from '../models/site-response.interface';
-import { API_URL } from '../app.config';
 import { BuildingResponseInterface } from '../models/building-response.interface';
 import {
   FloorInterface,
@@ -11,6 +10,7 @@ import {
 import { ParkingResponseInterface } from '../models/parking-response.interface';
 import { AddParkingInterface } from '../models/parking.interface';
 import { AddSiteInterface } from '../models/site.interface';
+import { API_URL } from './api.token';
 
 @Injectable({
   providedIn: 'root',

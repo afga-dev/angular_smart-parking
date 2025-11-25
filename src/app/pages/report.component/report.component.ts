@@ -1,8 +1,8 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { ClientService } from '../../services/client.service';
+import { ClientService } from '../../core/services/client.service';
 import { firstValueFrom } from 'rxjs';
-import { UserService } from '../../services/user.service';
-import { ParkingInterface } from '../../models/parking-response.interface';
+import { UserService } from '../../core/services/user.service';
+import { ParkingInterface } from '../../core/models/parking-response.interface';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { CommonModule } from '@angular/common';
@@ -67,7 +67,7 @@ export class ReportComponent implements OnInit {
     try {
       const spots = await firstValueFrom(
         this.clientService.getAllParking(
-          Number(this.userService.isSignedUp()?.extraId)
+          Number(this.userService.user()?.extraId)
         )
       );
       const sortedSpots = spots.data.sort((a, b) => {
@@ -93,7 +93,7 @@ export class ReportComponent implements OnInit {
 
   exportPDF() {
     const doc = new jsPDF('portrait', 'mm', 'a4');
-    const user = this.userService.isSignedUp()?.emailId;
+    const user = this.userService.user()?.emailId;
     const date = new Date();
     const formattedDate = date.toISOString().slice(0, 10);
 

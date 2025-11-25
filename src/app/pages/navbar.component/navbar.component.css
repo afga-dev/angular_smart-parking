@@ -1,0 +1,18 @@
+/* Navbar link tweaks */
+.nav-link {
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+}
+.nav-link:hover {
+  color: #fff;
+}
+
+/* Brand */
+.navbar-brand {
+  text-transform: uppercase;
+}
+
+/* Slightly wider padding for the navbar container */
+.navbar .container-fluid {
+  padding-inline: 1rem;
+}

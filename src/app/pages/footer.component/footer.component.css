@@ -1,0 +1,15 @@
+.footer {
+  text-transform: uppercase;
+}
+.footer h5 {
+  letter-spacing: 1px;
+}
+.footer p {
+  margin-bottom: 0;
+}
+.footer .social-links a {
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+.footer .social-links a:hover {
+  transform: translateY(-2px);
+}

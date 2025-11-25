@@ -8,13 +8,13 @@ import {
 } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { firstValueFrom } from 'rxjs';
-import { ClientService } from '../../services/client.service';
-import { UserService } from '../../services/user.service';
-import { SiteInterface } from '../../models/site-response.interface';
-import { BuildingInterface } from '../../models/building-response.interface';
-import { FloorInterface } from '../../models/floor-response.interface';
-import { ParkingInterface } from '../../models/parking-response.interface';
-import { AddParkingInterface } from '../../models/parking.interface';
+import { ClientService } from '../../core/services/client.service';
+import { UserService } from '../../core/services/user.service';
+import { SiteInterface } from '../../core/models/site-response.interface';
+import { BuildingInterface } from '../../core/models/building-response.interface';
+import { FloorInterface } from '../../core/models/floor-response.interface';
+import { ParkingInterface } from '../../core/models/parking-response.interface';
+import { AddParkingInterface } from '../../core/models/parking.interface';
 
 @Component({
   selector: 'app-dashboard',
@@ -124,7 +124,7 @@ export class DashboardComponent implements OnInit {
 
   async onLoading() {
     try {
-      const userId = Number(this.userService.isSignedUp()?.extraId);
+      const userId = Number(this.userService.user()?.extraId);
       if (!userId) return;
 
       const sites = await firstValueFrom(this.clientService.getSites(userId));

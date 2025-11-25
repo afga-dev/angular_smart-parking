@@ -1,21 +1,3 @@
-.signin-page {
-  background: url("../app/assets/background_1920.webp") no-repeat center center;
-  background-size: cover;
-  height: 100vh;
-  background-color: #212529;
-}
-.with-navbar main {
-  padding-top: 50px;
-  min-height: calc(100vh - 70px);
-  background-color: #fff;
-}
-@media (max-width: 768px) {
-  .signin-page {
-    background-image: url("../app/assets/background_768.webp");
-  }
-}
-@media (min-width: 2560px) {
-  .signin-page {
-    background-image: url("../app/assets/background_2560.webp");
-  }
+main {
+  padding-top: 56px;
 }

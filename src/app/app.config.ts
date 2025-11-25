@@ -1,24 +1,29 @@
 import {
   ApplicationConfig,
-  InjectionToken,
   provideBrowserGlobalErrorListeners,
   provideZonelessChangeDetection,
 } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withInMemoryScrolling } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
-
-export const API_URL = new InjectionToken<string>('API_URL');
+import { API_URL } from './core/services/api.token';
+import { environment } from '../environment/environment';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
-    provideRouter(routes),
+    provideRouter(
+      routes,
+      withInMemoryScrolling({
+        scrollPositionRestoration: 'top',
+        anchorScrolling: 'enabled',
+      })
+    ),
     provideHttpClient(),
     {
       provide: API_URL,
-      useValue: 'https://api.freeprojectapi.com/api/SmartParking',
+      useValue: environment.apiUrl,
     },
   ],
 };

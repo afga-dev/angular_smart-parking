@@ -8,13 +8,13 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ClientService } from '../../services/client.service';
-import { SiteInterface } from '../../models/site-response.interface';
+import { ClientService } from '../../core/services/client.service';
+import { SiteInterface } from '../../core/models/site-response.interface';
 import { firstValueFrom } from 'rxjs';
-import { UserService } from '../../services/user.service';
-import { BuildingInterface } from '../../models/building-response.interface';
-import { FloorInterface } from '../../models/floor-response.interface';
-import { AddSiteInterface } from '../../models/site.interface';
+import { UserService } from '../../core/services/user.service';
+import { BuildingInterface } from '../../core/models/building-response.interface';
+import { FloorInterface } from '../../core/models/floor-response.interface';
+import { AddSiteInterface } from '../../core/models/site.interface';
 
 @Component({
   selector: 'app-management',
@@ -191,7 +191,7 @@ export class ManagementComponent implements OnInit {
   }
 
   async loading() {
-    const id = Number(this.userService.isSignedUp()?.extraId);
+    const id = Number(this.userService.user()?.extraId);
     if (!id) return;
 
     await this.fetchAndSet(id, { setFirstExpanded: true });
@@ -478,7 +478,7 @@ export class ManagementComponent implements OnInit {
 
   // Update the sites, buildings and floors signals.
   async updateSignals() {
-    const id = Number(this.userService.isSignedUp()?.extraId);
+    const id = Number(this.userService.user()?.extraId);
     if (!id) return;
 
     await this.fetchAndSet(id, {
@@ -567,7 +567,7 @@ export class ManagementComponent implements OnInit {
     if (isNew) {
       if (!this.newSite) return;
       this.siteForm.patchValue({
-        clientId: this.userService.isSignedUp()?.extraId,
+        clientId: this.userService.user()?.extraId,
       });
     } else {
       if (!this.selectedSite) return;
