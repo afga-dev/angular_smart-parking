@@ -14,9 +14,9 @@
           class="nav-link"
           routerLink="/report"
           routerLinkActive="active"
-          title="Dashboard"
+          title="Report"
         >
-          <i class="bi bi-trophy-fill"></i>
+          <i class="bi bi-file-earmark-pdf-fill"></i>
         </a>
       </li>
       <li class="nav-item me-3">
@@ -24,9 +24,9 @@
           class="nav-link"
           routerLink="/management"
           routerLinkActive="active"
-          title="Dashboard"
+          title="Management"
         >
-          <i class="bi bi-trophy-fill"></i>
+          <i class="bi bi-tools"></i>
         </a>
       </li>
       <li class="nav-item">
@@ -36,37 +36,14 @@
       </li>
     </ul>
     <!-- Center -->
-    <a class="navbar-brand mx-auto" routerLink="/">Project competition</a>
+    <a class="navbar-brand mx-auto" routerLink="/">Smart parking</a>
     <!-- Right -->
     <ul class="navbar-nav d-flex flex-row align-items-center mb-0">
-      @if(!user()) {
-      <li class="nav-item me-3">
-        <a
-          class="nav-link"
-          routerLink="/signup"
-          routerLinkActive="active"
-          title="Sign up"
-        >
-          <i class="bi bi-person-fill-add"></i>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a
-          class="nav-link"
-          routerLink="/signin"
-          routerLinkActive="active"
-          title="Sign in"
-        >
-          <i class="bi bi-person-fill-lock"></i>
-        </a>
-      </li>
-      } @else {
       <li>
         <a class="nav-link" (click)="onSignOut()" title="Sign out">
           <i class="bi bi-person-fill-slash"></i>
         </a>
       </li>
-      }
     </ul>
   </div>
 </nav>

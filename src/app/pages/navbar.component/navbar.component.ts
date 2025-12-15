@@ -1,6 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { UserService } from '../../core/services/user.service';
 import { scrollToElement, scrollToTop } from '../../shared/utils/scroll.util';
 import { AuthService } from '../../core/services/auth.service';
 
@@ -15,9 +14,6 @@ export class NavbarComponent {
   private router = inject(Router);
 
   private authService = inject(AuthService);
-  private userService = inject(UserService);
-
-  readonly user = this.userService.user;
 
   onSignOut() {
     this.authService.signOutAndRedirect();

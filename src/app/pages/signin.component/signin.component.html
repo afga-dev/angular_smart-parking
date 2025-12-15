@@ -9,11 +9,10 @@
     <section class="login-card mb-4">
       <h2>Welcome back</h2>
       <p class="subtitle">Your parking data awaits</p>
-
-      <form [formGroup]="signinForm" (ngSubmit)="onSignin()" novalidate>
-        @if (signinError()) {
+      <form [formGroup]="signinForm" (ngSubmit)="onSubmit()" novalidate>
+        @if (error()) {
         <div class="error-banner">
-          {{ signinError() }}
+          {{ error() }}
         </div>
         }
         <!-- Email -->
@@ -23,9 +22,7 @@
             type="text"
             id="emailId"
             formControlName="emailId"
-            name="emailId"
             placeholder="Email"
-            autocomplete="email"
           />
           @if (hasError('emailId', 'required')) {
           <div class="input-error-bubble" aria-live="polite">
@@ -48,9 +45,7 @@
             type="password"
             id="password"
             formControlName="password"
-            name="password"
             placeholder="Password"
-            autocomplete="current-password"
           />
           @if (hasError('password', 'required')) {
           <div class="input-error-bubble" aria-live="polite">

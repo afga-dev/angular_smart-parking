@@ -1,1 +1,55 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --ui-border-color: #ddd;
+  --ui-text-color: #000;
+  --ui-bg-disabled: #f5f5f5;
+  --ui-bg-dropdown: #fff;
+  --ui-bg-selected: #fff;
+  --ui-text-selected: #000;
+  --ui-bg-hover: #f1f1f1;
+  --primary-green: #198754;
+  --primary-red: #dc3545;
+  --light-bg: #f8f9fa;
+  --dark-bg: #212529;
+  --text-dark: #111;
+  --text-muted: #777;
+  --card-shadow: rgba(0, 0, 0, 0.1);
+  --card-shadow-hover: rgba(0, 0, 0, 0.15);
+}
+.ng-select .ng-select-container {
+  border-radius: 0 !important;
+  border: 1px solid var(--ui-border-color) !important;
+  color: var(--ui-text-color) !important;
+  box-shadow: none !important;
+}
+.ng-select:hover .ng-select-container {
+  border-color: var(--ui-border-color) !important;
+}
+.ng-select.ng-select-focused .ng-select-container {
+  border-color: var(--ui-border-color) !important;
+  box-shadow: none !important;
+}
+.ng-select.ng-select-opened .ng-select-container {
+  border-color: var(--ui-border-color) !important;
+  box-shadow: none !important;
+}
+.ng-select.ng-select-disabled .ng-select-container {
+  background-color: var(--ui-bg-disabled) !important;
+  border-color: var(--ui-border-color) !important;
+  opacity: 0.6;
+}
+.ng-select .ng-dropdown-panel {
+  border-radius: 0 !important;
+  border: 1px solid var(--ui-border-color) !important;
+  background: var(--ui-bg-dropdown) !important;
+}
+.ng-select .ng-dropdown-panel .ng-option.ng-option-selected {
+  background: var(--ui-bg-selected) !important;
+  color: var(--ui-text-selected) !important;
+}
+.ng-select .ng-dropdown-panel .ng-option:hover {
+  background: var(--ui-bg-hover) !important;
+}
+.ng-select[disabled] {
+  opacity: 0.6;
+  pointer-events: none;
+}

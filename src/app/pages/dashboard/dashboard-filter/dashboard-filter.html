@@ -1,0 +1,49 @@
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <label class="form-label" for="siteSelect">Site</label>
+    <ng-select
+      id="siteSelect"
+      aria-label="Select Site"
+      [items]="sites()"
+      bindLabel="siteName"
+      bindValue="siteId"
+      [(ngModel)]="selectedSite"
+      (change)="onSiteChange($event)"
+      [searchable]="true"
+      [disabled]="isLoading()"
+      placeholder="Select site..."
+    ></ng-select>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label" for="buildingSelect">Building</label>
+    <ng-select
+      id="buildingSelect"
+      aria-label="Select Building"
+      [items]="buildings()"
+      bindLabel="buildingName"
+      bindValue="buildingId"
+      [(ngModel)]="selectedBuilding"
+      (change)="onBuildingChange($event)"
+      [searchable]="true"
+      [disabled]="isLoading()"
+      placeholder="Select building..."
+    ></ng-select>
+  </div>
+
+  <div class="col-md-4">
+    <label class="form-label" for="floorSelect">Floor</label>
+    <ng-select
+      id="floorSelect"
+      aria-label="Select Floor"
+      [items]="floors()"
+      bindLabel="floorNo"
+      bindValue="floorId"
+      [(ngModel)]="selectedFloor"
+      (change)="onFloorChange($event)"
+      [searchable]="true"
+      [disabled]="isLoading()"
+      placeholder="Select floor..."
+    ></ng-select>
+  </div>
+</div>

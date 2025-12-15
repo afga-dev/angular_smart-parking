@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { UserService } from '../../core/services/user.service';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
@@ -13,17 +13,18 @@ import { Router } from '@angular/router';
   templateUrl: './signin.component.html',
   styleUrl: './signin.component.css',
 })
-export class SigninComponent {
+export class SigninComponent implements OnInit {
   private router = inject(Router);
-  private authService = inject(AuthService);
-
-  userService = inject(UserService);
   private formBuilder = inject(FormBuilder);
 
-  readonly isSubmitting = signal(false);
-  readonly signinError = signal<string | null>(null);
+  private authService = inject(AuthService);
+  private userService = inject(UserService);
 
-  showPassword = false;
+  private _isLoading = signal<boolean>(false);
+  readonly isLoading = this._isLoading.asReadonly();
+
+  private _error = signal<string | null>(null);
+  readonly error = this._error.asReadonly();
 
   readonly signinForm = this.formBuilder.nonNullable.group({
     emailId: [
@@ -37,28 +38,30 @@ export class SigninComponent {
     this.userService.loadUserFromLocalStorage();
   }
 
+  async onSubmit(): Promise<void> {
+    try {
+      if (this.signinForm.invalid || this.isLoading()) return;
+
+      this._isLoading.set(true);
+
+      const signIn: Signin = this.signinForm.getRawValue();
+      signIn.emailId = signIn.emailId.trim();
+      signIn.password = signIn.password.trim();
+
+      const user = await firstValueFrom(this.authService.login(signIn));
+      this.userService.setUser(user);
+
+      this.router.navigateByUrl('/');
+    } catch (err) {
+      this._error.set('Incorrect email or password.');
+      // console.error(err);
+    } finally {
+      this._isLoading.set(false);
+    }
+  }
+
   hasError(controlName: string, error: string): boolean {
     const control = this.signinForm.get(controlName);
     return !!(control?.touched && control?.hasError(error));
-  }
-
-  async onSignin() {
-    if (this.signinForm.invalid || this.isSubmitting()) return;
-
-    const signinData: Signin = this.signinForm.getRawValue();
-
-    this.isSubmitting.set(true);
-    this.signinError.set(null);
-
-    try {
-      const user = await firstValueFrom(this.authService.login(signinData));
-      this.userService.setUser(user);
-      this.signinForm.reset();
-      this.router.navigateByUrl("/");
-    } catch (err) {
-      this.signinError.set('Incorrect email or password.');
-    } finally {
-      this.isSubmitting.set(false);
-    }
   }
 }

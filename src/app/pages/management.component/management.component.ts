@@ -8,13 +8,12 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { ClientService } from '../../core/services/client.service';
-import { SiteInterface } from '../../core/models/site-response.interface';
+import { LocationService } from '../../core/services/location.service';
+import { AddSite, Site } from '../../core/models/site.interface';
 import { firstValueFrom } from 'rxjs';
 import { UserService } from '../../core/services/user.service';
-import { BuildingInterface } from '../../core/models/building-response.interface';
-import { FloorInterface } from '../../core/models/floor-response.interface';
-import { AddSiteInterface } from '../../core/models/site.interface';
+import { Building } from '../../core/models/building.interface';
+import { Floor } from '../../core/models/floor.interface';
 
 @Component({
   selector: 'app-management',
@@ -25,12 +24,12 @@ import { AddSiteInterface } from '../../core/models/site.interface';
 })
 export class ManagementComponent implements OnInit {
   private userService = inject(UserService);
-  private clientService = inject(ClientService);
+  private locationService = inject(LocationService);
   private formBuilder = inject(FormBuilder);
 
-  readonly sites = signal<SiteInterface[]>([]);
-  readonly buildings = signal<BuildingInterface[]>([]);
-  readonly floors = signal<FloorInterface[]>([]);
+  readonly sites = signal<Site[]>([]);
+  readonly buildings = signal<Building[]>([]);
+  readonly floors = signal<Floor[]>([]);
   readonly isSubmitting = signal(false);
   readonly responseSuccessful = signal<string | null>(null);
   readonly responseError = signal<string | null>(null);
@@ -40,15 +39,15 @@ export class ManagementComponent implements OnInit {
   newBuilding: boolean = false;
   newFloor: boolean = false;
 
-  selectedSite: SiteInterface | null = null;
-  selectedSiteForBuilding: SiteInterface | null = null;
-  selectedBuilding: BuildingInterface | null = null;
-  selectedBuildingForFloor: BuildingInterface | null = null;
-  selectedFloor: FloorInterface | null = null;
+  selectedSite: Site | null = null;
+  selectedSiteForBuilding: Site | null = null;
+  selectedBuilding: Building | null = null;
+  selectedBuildingForFloor: Building | null = null;
+  selectedFloor: Floor | null = null;
 
-  selectedSiteCRUD: SiteInterface | null = null;
-  selectedBuildingCRUD: BuildingInterface | null = null;
-  selectedFloorCRUD: FloorInterface | null = null;
+  selectedSiteCRUD: Site | null = null;
+  selectedBuildingCRUD: Building | null = null;
+  selectedFloorCRUD: Floor | null = null;
 
   readonly isLoading = computed(() => this.sites().length === 0);
 
@@ -112,26 +111,26 @@ export class ManagementComponent implements OnInit {
   // Fetch sites, buildings, and floors from the API.
   private async fetch(extraId: number) {
     const sitesResponse = await firstValueFrom(
-      this.clientService.getSites(extraId)
+      this.locationService.getSites(extraId)
     );
     const sitesData = sitesResponse.data || [];
 
     const buildingsArray = await Promise.all(
-      sitesData.map(async (site) => {
+      sitesData.map(async (site: { siteId: number }) => {
         const buildingResponse = await firstValueFrom(
-          this.clientService.getBuilding(site.siteId)
+          this.locationService.getBuildings(site.siteId)
         );
-        return (buildingResponse.data || []).map((b) => ({ ...b }));
+        return (buildingResponse.data || []).map((b: any) => ({ ...b }));
       })
     );
     const allBuildings = buildingsArray.flat();
 
     const floorsArray = await Promise.all(
-      allBuildings.map(async (building) => {
+      allBuildings.map(async (building: { buildingId: number }) => {
         const floorsResponse = await firstValueFrom(
-          this.clientService.getFloor(building.buildingId)
+          this.locationService.getFloors(building.buildingId)
         );
-        return (floorsResponse.data || []).map((f) => ({ ...f }));
+        return (floorsResponse.data || []).map((f: any) => ({ ...f }));
       })
     );
     const allFloors = floorsArray.flat();
@@ -153,12 +152,15 @@ export class ManagementComponent implements OnInit {
       let processedSites;
       if (options?.preserveExpanded) {
         const currentSites = this.sites();
-        processedSites = sitesData.map((newSite) => {
+        processedSites = sitesData.map((newSite: { siteId: number }) => {
           const oldSite = currentSites.find((s) => s.siteId === newSite.siteId);
           return { ...newSite, expanded: oldSite?.expanded ?? false };
         });
       } else if (options?.setFirstExpanded) {
-        processedSites = sitesData.map((s, i) => ({ ...s, expanded: i === 0 }));
+        processedSites = sitesData.map((s: any, i: number) => ({
+          ...s,
+          expanded: i === 0,
+        }));
       } else {
         processedSites = sitesData;
       }
@@ -169,15 +171,20 @@ export class ManagementComponent implements OnInit {
 
       if (options?.updateSelected) {
         this.selectedSite =
-          processedSites.find((s) => s.siteId === this.selectedSite?.siteId) ||
-          null;
+          processedSites.find(
+            (s: { siteId: number | undefined }) =>
+              s.siteId === this.selectedSite?.siteId
+          ) || null;
         this.selectedBuilding =
           allBuildings.find(
-            (b) => b.buildingId === this.selectedBuilding?.buildingId
+            (b: { buildingId: number | undefined }) =>
+              b.buildingId === this.selectedBuilding?.buildingId
           ) || null;
         this.selectedFloor =
-          allFloors.find((f) => f.floorId === this.selectedFloor?.floorId) ||
-          null;
+          allFloors.find(
+            (f: { floorId: number | undefined }) =>
+              f.floorId === this.selectedFloor?.floorId
+          ) || null;
       }
     } catch {
       this.sites.set([]);
@@ -232,19 +239,19 @@ export class ManagementComponent implements OnInit {
     }
   }
 
-  selectSite(site: SiteInterface) {
+  selectSite(site: Site) {
     this.resetSelection('site');
     this.selectedSite = site;
     this.setSite(false);
   }
 
-  selectBuilding(building: BuildingInterface) {
+  selectBuilding(building: Building) {
     this.resetSelection('building');
     this.selectedBuilding = building;
     this.setBuilding(false);
   }
 
-  selectFloor(floor: FloorInterface) {
+  selectFloor(floor: Floor) {
     this.resetSelection('floor');
     this.selectedFloor = floor;
     this.setFloor(false);
@@ -295,13 +302,13 @@ export class ManagementComponent implements OnInit {
     this.setSite(true);
   }
 
-  addBuilding(site: SiteInterface) {
+  addBuilding(site: Site) {
     this.resetAdd('building');
     this.selectedSiteForBuilding = site;
     this.setBuilding(true);
   }
 
-  addFloor(building: BuildingInterface) {
+  addFloor(building: Building) {
     this.resetAdd('floor');
     this.selectedBuildingForFloor = building;
     this.setFloor(true);
@@ -309,18 +316,18 @@ export class ManagementComponent implements OnInit {
 
   // Add or update a site, building or floor.
   async onAddSite() {
-    const site: AddSiteInterface = this.siteForm.getRawValue();
+    const site: AddSite = this.siteForm.getRawValue();
 
     this.resetSignals();
 
     try {
       let message = '';
       if (this.newSite) {
-        await firstValueFrom(this.clientService.addSite(site));
+        await firstValueFrom(this.locationService.addSite(site));
         this.siteForm.reset();
         message = 'The site added successfully.';
       } else if (this.selectedSite) {
-        await firstValueFrom(this.clientService.updateSite(site));
+        await firstValueFrom(this.locationService.updateSite(site));
         message = 'The site updated successfully.';
       }
 
@@ -334,18 +341,18 @@ export class ManagementComponent implements OnInit {
   }
 
   async onAddBuilding() {
-    const site: AddSiteInterface = this.siteForm.getRawValue();
+    const site: AddSite = this.siteForm.getRawValue();
 
     this.resetSignals();
 
     try {
       let message = '';
       if (this.newBuilding) {
-        await firstValueFrom(this.clientService.updateSite(site));
+        await firstValueFrom(this.locationService.updateSite(site));
         this.siteForm.reset();
         message = 'The building added successfully.';
       } else if (this.selectedBuilding) {
-        await firstValueFrom(this.clientService.updateSite(site));
+        await firstValueFrom(this.locationService.updateSite(site));
         message = 'The building updated successfully.';
       }
 
@@ -359,18 +366,18 @@ export class ManagementComponent implements OnInit {
   }
 
   async onAddFloor() {
-    const floor: FloorInterface = this.floorForm.getRawValue();
+    const floor: Floor = this.floorForm.getRawValue();
 
     this.resetSignals();
 
     try {
       let message = '';
       if (this.newFloor) {
-        await firstValueFrom(this.clientService.addFloor(floor));
+        await firstValueFrom(this.locationService.addFloor(floor));
         this.floorForm.reset();
         message = 'The floor added successfully.';
       } else if (this.selectedFloor) {
-        await firstValueFrom(this.clientService.updateFloor(floor));
+        await firstValueFrom(this.locationService.updateFloor(floor));
         message = 'The floor updated successfully.';
       }
 
@@ -392,17 +399,17 @@ export class ManagementComponent implements OnInit {
   }
 
   // Open the modal to delete sites, buildings or floors.
-  openSiteDeleteModal(site: SiteInterface) {
+  openSiteDeleteModal(site: Site) {
     this.selectedSiteCRUD = site;
     this.showDeleteModal.set(true);
   }
 
-  openBuildingDeleteModal(building: BuildingInterface) {
+  openBuildingDeleteModal(building: Building) {
     this.selectedBuildingCRUD = building;
     this.showDeleteModal.set(true);
   }
 
-  openDeleteFloorModal(floor: FloorInterface) {
+  openDeleteFloorModal(floor: Floor) {
     this.selectedFloorCRUD = floor;
     this.showDeleteModal.set(true);
   }
@@ -413,7 +420,7 @@ export class ManagementComponent implements OnInit {
 
     try {
       await firstValueFrom(
-        this.clientService.deleteSite(Number(this.selectedSiteCRUD.siteId))
+        this.locationService.deleteSite(Number(this.selectedSiteCRUD.siteId))
       );
 
       this.updateSignals();
@@ -443,7 +450,7 @@ export class ManagementComponent implements OnInit {
 
     try {
       await firstValueFrom(
-        this.clientService.deleteFloor(this.selectedFloorCRUD.floorId)
+        this.locationService.deleteFloor(this.selectedFloorCRUD.floorId)
       );
 
       this.updateSignals();
@@ -471,7 +478,7 @@ export class ManagementComponent implements OnInit {
   }
 
   // Toggle expansion state of a site.
-  toggleSite(site: SiteInterface) {
+  toggleSite(site: Site) {
     site.expanded = !site.expanded;
     this.sites.update((s) => [...s]);
   }
@@ -523,7 +530,7 @@ export class ManagementComponent implements OnInit {
   }
 
   // Helper to build FormGroup for a building.
-  private buildSiteFormGroup(building: BuildingInterface): FormGroup {
+  private buildSiteFormGroup(building: Building): FormGroup {
     return this.formBuilder.nonNullable.group({
       buildingId: [building.buildingId],
       siteId: [building.siteId],
@@ -677,7 +684,7 @@ export class ManagementComponent implements OnInit {
   }
 
   // Returns true if a site has floors; used to disable delete button for sites.
-  hasFloors(site: SiteInterface): boolean {
+  hasFloors(site: Site): boolean {
     const siteBuildings = this.buildings().filter(
       (b) => b.siteId === site.siteId
     );

@@ -1,8 +1,8 @@
 import { Component, computed, inject, OnInit, signal } from '@angular/core';
-import { ClientService } from '../../core/services/client.service';
+import { LocationService } from '../../core/services/location.service';
 import { firstValueFrom } from 'rxjs';
 import { UserService } from '../../core/services/user.service';
-import { ParkingInterface } from '../../core/models/parking-response.interface';
+import { Parking } from '../../core/models/parking.interface';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { CommonModule } from '@angular/common';
@@ -16,10 +16,10 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './report.component.css',
 })
 export class ReportComponent implements OnInit {
-  private clientService = inject(ClientService);
+  private locationService = inject(LocationService);
   private userService = inject(UserService);
 
-  readonly parking = signal<ParkingInterface[]>([]);
+  readonly parking = signal<Parking[]>([]);
   readonly searchTerm = signal('');
   readonly currentPage = signal(1);
   readonly itemsPerPage = 10;
@@ -66,11 +66,11 @@ export class ReportComponent implements OnInit {
     this.isLoading.set(true);
     try {
       const spots = await firstValueFrom(
-        this.clientService.getAllParking(
+        this.locationService.getAllParkings(
           Number(this.userService.user()?.extraId)
         )
       );
-      const sortedSpots = spots.data.sort((a, b) => {
+      const sortedSpots = spots.data.sort((a: { siteName: string; buildingName: string; floorNo: string; }, b: { siteName: any; buildingName: any; floorNo: any; }) => {
         const site = a.siteName.localeCompare(b.siteName);
         if (site !== 0) return site;
         const building = a.buildingName.localeCompare(b.buildingName);

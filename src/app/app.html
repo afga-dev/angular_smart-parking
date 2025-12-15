@@ -1,6 +1,6 @@
-@if (isLoaded()) { @if (!user()) {
+@if (isLoaded() && !user()) {
 <app-signin />
-} @else {
+} @else if(isLoaded()) {
 <div class="d-flex flex-column min-vh-100">
   <app-navbar />
   <main class="flex-grow-1 bg-light">
@@ -8,4 +8,4 @@
   </main>
   <app-footer />
 </div>
-} }
+}
