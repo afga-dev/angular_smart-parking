@@ -1,0 +1,42 @@
+/* Stat card */
+.stats-row .card {
+  background: var(--dark-bg);
+  border-radius: 0;
+  color: var(--text-white);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  min-height: 7.5rem;
+  box-shadow: 0 4px 12px var(--card-shadow);
+  opacity: 0;
+  animation: fadeInUp 0.6s ease forwards;
+}
+.stats-row .card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px var(--card-shadow-hover);
+}
+.stats-row .card .card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.stats-row .card h6 {
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+.stats-row .card h4 {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

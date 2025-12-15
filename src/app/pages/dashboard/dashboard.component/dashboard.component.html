@@ -1,4 +1,11 @@
 <div class="container-fluid py-4">
-  <app-dashboard-filter />
+  <app-dashboard-filter
+    (occupiedParkingsChange)="updateOccupiedParkings($event)"
+    (parkingSpotsChange)="updateParkingSpots($event)"
+  />
+  <app-dashboard-stats
+    [occupiedParkings]="occupiedParkings()"
+    [parkingSpots]="parkingSpots()"
+  />
   <p class="text-muted text-center">Dashboard under reconstruction</p>
 </div>

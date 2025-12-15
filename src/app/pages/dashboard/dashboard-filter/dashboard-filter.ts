@@ -1,8 +1,8 @@
-import { CommonModule } from '@angular/common';
 import {
   Component,
   inject,
   OnInit,
+  output,
   signal,
   WritableSignal,
 } from '@angular/core';
@@ -20,13 +20,17 @@ type LocationLevel = 'site' | 'building' | 'floor';
 
 @Component({
   selector: 'app-dashboard-filter',
-  imports: [CommonModule, NgSelectComponent, FormsModule],
+  standalone: true,
+  imports: [NgSelectComponent, FormsModule],
   templateUrl: './dashboard-filter.html',
   styleUrl: './dashboard-filter.css',
 })
 export class DashboardFilter implements OnInit {
   private userService = inject(UserService);
   private locationService = inject(LocationService);
+
+  readonly occupiedParkingsChange = output<Parking[]>();
+  readonly parkingSpotsChange = output<number[]>();
 
   readonly _sites = signal<Site[]>([]);
   readonly sites = this._sites.asReadonly();
@@ -40,7 +44,7 @@ export class DashboardFilter implements OnInit {
   readonly _isLoading = signal<boolean>(true);
   readonly isLoading = this._isLoading.asReadonly();
 
-  readonly _parkings = signal<Parking[]>([]);
+  readonly _occupiedParkings = signal<Parking[]>([]);
   readonly _parkingSpots = signal<number[]>([]);
 
   readonly _user = this.userService.user;
@@ -97,7 +101,7 @@ export class DashboardFilter implements OnInit {
 
     await this.fetchAndSet(
       this.locationService.getParkings(floor.floorId),
-      this._parkings
+      this._occupiedParkings
     );
 
     this.selectedFloor = floor.floorId;
@@ -105,6 +109,8 @@ export class DashboardFilter implements OnInit {
     this._parkingSpots.set(
       Array.from({ length: floor.totalParkingSpots }, (_, i) => i + 1)
     );
+
+    this.emitState();
   }
 
   private resetFrom(level: LocationLevel): void {
@@ -118,8 +124,10 @@ export class DashboardFilter implements OnInit {
       this.selectedFloor = null;
     }
 
-    this._parkings.set([]);
+    this._occupiedParkings.set([]);
     this._parkingSpots.set([]);
+
+    this.emitState();
   }
 
   private async fetchAndSet<T>(
@@ -132,5 +140,10 @@ export class DashboardFilter implements OnInit {
     } catch {
       target.set([]);
     }
+  }
+
+  private emitState(): void {
+    this.occupiedParkingsChange.emit(this._occupiedParkings());
+    this.parkingSpotsChange.emit(this._parkingSpots());
   }
 }
