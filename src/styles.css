@@ -6,16 +6,45 @@
   --ui-bg-selected: #fff;
   --ui-text-selected: #000;
   --ui-bg-hover: #f1f1f1;
+
   --primary-green: #198754;
   --primary-red: #dc3545;
+
   --light-bg: #f8f9fa;
   --dark-bg: #212529;
+
   --text-dark: #111;
   --text-white: #fff;
   --text-muted: #777;
+
   --card-shadow: rgba(0, 0, 0, 0.1);
   --card-shadow-hover: rgba(0, 0, 0, 0.15);
+
+  --login-bg: #111;
+  --login-panel-bg: #0d0d0d;
+  --login-card-bg: #181818;
+
+  --border-dark: #1f1f1f;
+  --border-darker: #2a2a2a;
+
+  --text-subtle: #9a9a9a;
+  --text-soft: #b5b5b5;
+  --text-icon-muted: #8a8a8a;
+
+  --error-bg: #f8d7da;
+  --error-text: #721c24;
+  --error-banner-bg: #a02424;
+
+  --btn-primary-bg: #f0f0f0;
+  --btn-primary-bg-hover: #e6e6e6;
+  --btn-disabled-bg: #3a3a3a;
+
+  --input-bg-dark: #121212;
+  --focus-ring: rgba(255, 255, 255, 0.1);
+
+  --login-shadow: rgba(0, 0, 0, 0.45);
 }
+
 .ng-select .ng-select-container {
   border-radius: 0 !important;
   border: 1px solid var(--ui-border-color) !important;
@@ -54,3 +83,8 @@
   opacity: 0.6;
   pointer-events: none;
 }
+.ng-select .ng-dropdown-panel .ng-option.ng-option-marked {
+  background: var(--ui-bg-hover) !important;
+  color: var(--ui-text-color) !important;
+}
+

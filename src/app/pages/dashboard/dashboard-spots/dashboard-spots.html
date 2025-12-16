@@ -1,1 +1,154 @@
-<p>dashboard-spots works!</p>
+<!-- Parking spots -->
+<div class="card parking-container">
+  <div class="card-body parking-scroll">
+    @if (parkingSpots().length > 0) {
+    <div class="row g-2">
+      @for (spot of parkingSpots(); track spot) { @let info =
+      spotByNumber().get(spot);
+      <div class="col-6 col-sm-4 col-md-2 d-flex align-items-stretch">
+        <div
+          class="card parking-card w-100"
+          [ngClass]="info ? 'occupied' : 'available'"
+        >
+          <div class="mb-2 text-center">
+            <h6 class="mb-0">Spot #{{ spot }}</h6>
+
+            @if (info) {
+            <small>{{ info.vehicleNo }}</small>
+            <small>{{ info.custMobileNo }}</small>
+            }
+          </div>
+          <div class="d-flex gap-1 justify-content-center flex-wrap">
+            @if (!info) {
+            <button
+              type="button"
+              class="btn btn-reserve btn-sm"
+              (click)="openReserveModal(spot)"
+            >
+              Reserve
+            </button>
+            } @else {
+            <button
+              type="button"
+              class="btn btn-release btn-sm"
+              (click)="openReleaseModal(spot)"
+            >
+              Release
+            </button>
+            }
+          </div>
+        </div>
+      </div>
+      }
+    </div>
+    } @else {
+    <p class="text-muted">No parking spots available.</p>
+    }
+  </div>
+</div>
+<!-- Reserve modal -->
+@if (showReserveModal()) {
+<div
+  class="app-modal"
+  [class.show]="showReserveModal()"
+  (click)="closeReserveModal()"
+  role="dialog"
+  aria-modal="true"
+>
+  <div class="app-modal-content" (click)="$event.stopPropagation()">
+    <div class="app-modal-header">
+      <h5>Reserve spot #{{ selectedReserve }}</h5>
+    </div>
+    <div class="app-modal-body">
+      <form [formGroup]="spotForm">
+        <div class="modal-form-group position-relative">
+          <div class="modal-input">
+            <i class="bi bi-car-front-fill"></i>
+            <input
+              type="text"
+              formControlName="vehicleNo"
+              placeholder="Enter VIN"
+              maxlength="17"
+            />
+          </div>
+          @if (hasError('vehicleNo', 'required')) {
+          <span class="input-error-bubble">Required</span>
+          } @if (hasError('vehicleNo', 'maxlength')) {
+          <span class="input-error-bubble">Max 17 characters</span>
+          }
+        </div>
+        <div class="modal-form-group position-relative">
+          <div class="modal-input">
+            <i class="bi bi-telephone-fill"></i>
+            <input
+              type="text"
+              formControlName="custMobileNo"
+              placeholder="Enter phone number"
+              maxlength="15"
+            />
+          </div>
+          @if (hasError('custMobileNo', 'required')) {
+          <span class="input-error-bubble">Required</span>
+          } @if (hasError('custMobileNo', 'maxlength')) {
+          <span class="input-error-bubble">Max 15 characters</span>
+          }
+        </div>
+      </form>
+    </div>
+    <div class="app-modal-footer">
+      <button
+        type="button"
+        class="modal-btn modal-btn-dark"
+        (click)="closeReserveModal()"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="modal-btn modal-btn-success"
+        [disabled]="spotForm.invalid"
+        (click)="onReserve()"
+      >
+        Reserve
+      </button>
+    </div>
+  </div>
+</div>
+}
+<!-- Release modal -->
+@if (showReleaseModal()) {
+<div
+  class="app-modal"
+  [class.show]="showReleaseModal()"
+  (click)="closeReleaseModal()"
+  role="dialog"
+  aria-modal="true"
+>
+  <div class="app-modal-content" (click)="$event.stopPropagation()">
+    <div class="app-modal-header">
+      <h5>Release spot</h5>
+    </div>
+    <div class="app-modal-body">
+      Are you sure you want to release
+      <strong>spot #{{ selectedRelease }}</strong
+      >?
+    </div>
+    <div class="app-modal-footer">
+      <button
+        type="button"
+        class="modal-btn modal-btn-dark"
+        (click)="closeReleaseModal()"
+      >
+        Cancel
+      </button>
+      <button
+        type="button"
+        class="modal-btn modal-btn-danger"
+        (click)="onRelease()"
+      >
+        Release
+      </button>
+    </div>
+  </div>
+</div>
+}

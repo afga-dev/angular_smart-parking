@@ -31,6 +31,7 @@ export class DashboardFilter implements OnInit {
 
   readonly occupiedParkingsChange = output<Parking[]>();
   readonly parkingSpotsChange = output<number[]>();
+  readonly selectedFloorChange = output<number | null>();
 
   readonly _sites = signal<Site[]>([]);
   readonly sites = this._sites.asReadonly();
@@ -57,7 +58,7 @@ export class DashboardFilter implements OnInit {
     this.loadingLocations();
   }
 
-  async loadingLocations(): Promise<void> {
+  private async loadingLocations(): Promise<void> {
     try {
       const userId = Number(this._user()?.extraId);
       if (!userId) return;
@@ -127,7 +128,16 @@ export class DashboardFilter implements OnInit {
     this._occupiedParkings.set([]);
     this._parkingSpots.set([]);
 
-    this.emitState();
+    this.emitStateIfSelectionIncomplete();
+  }
+
+  private emitStateIfSelectionIncomplete(): void {
+    if (
+      this.selectedSite === null ||
+      this.selectedBuilding === null ||
+      this.selectedFloor === null
+    )
+      this.emitState();
   }
 
   private async fetchAndSet<T>(
@@ -145,5 +155,6 @@ export class DashboardFilter implements OnInit {
   private emitState(): void {
     this.occupiedParkingsChange.emit(this._occupiedParkings());
     this.parkingSpotsChange.emit(this._parkingSpots());
+    this.selectedFloorChange.emit(this.selectedFloor);
   }
 }

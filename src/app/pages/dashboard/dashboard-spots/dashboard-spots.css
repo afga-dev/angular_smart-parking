@@ -1,0 +1,213 @@
+/* Parking container */
+.parking-container {
+  background: var(--ui-bg-dropdown);
+  border: 1px solid var(--ui-border-color);
+  border-radius: 0;
+  padding-right: 6px;
+}
+.parking-scroll {
+  max-height: 65vh;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+/* Parking card */
+.parking-card {
+  border-radius: 0;
+  min-height: 6.9rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: var(--text-white);
+  text-transform: uppercase;
+  box-shadow: 0 2px 6px var(--card-shadow);
+  transition: transform 0.2s ease, box-shadow 0.25s ease;
+}
+.parking-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--card-shadow-hover);
+}
+.parking-card h6 {
+  font-size: 0.9rem;
+  margin-bottom: 0.3rem;
+}
+.parking-card small {
+  font-size: 0.75rem;
+  display: block;
+  line-height: 1.2;
+  opacity: 0.85;
+}
+.parking-card small:first-of-type {
+  font-weight: 600;
+}
+
+/* Card states */
+.parking-card.available {
+  background: var(--primary-green);
+  border: 2px solid var(--primary-green);
+}
+.parking-card.occupied {
+  background: var(--primary-red);
+  border: 2px solid var(--primary-red);
+}
+
+/* Parking buttons */
+.parking-card .btn {
+  border-radius: 0;
+  font-size: 0.7rem;
+  padding: 0.35rem 0.6rem;
+  text-transform: uppercase;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+.parking-card .btn:hover {
+  transform: scale(1.05);
+}
+.btn-reserve {
+  background: var(--ui-bg-dropdown);
+  color: var(--primary-green);
+  border: 1px solid var(--ui-bg-dropdown);
+}
+.btn-release {
+  background: var(--ui-bg-dropdown);
+  color: var(--primary-red);
+  border: 1px solid var(--ui-bg-dropdown);
+}
+
+/* Empty state */
+.text-muted {
+  color: var(--text-muted) !important;
+}
+.parking-scroll p.text-muted {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Modal backdrop */
+.app-modal {
+  position: fixed;
+  top: 56px;
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 56px);
+  background: rgba(0, 0, 0, 0.35);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1055;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+.app-modal.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Modal box */
+.app-modal-content {
+  background: var(--ui-bg-dropdown);
+  max-width: 420px;
+  width: 100%;
+  border-radius: 0;
+  box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.25);
+  text-transform: uppercase;
+  opacity: 0;
+  transform: translateY(15px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.app-modal.show .app-modal-content {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Modal sections */
+.app-modal-header {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--ui-border-color);
+  font-size: 0.85rem;
+}
+.app-modal-body {
+  padding: 1rem;
+  font-size: 0.9rem;
+}
+.app-modal-footer {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--ui-border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+/* Modal buttons */
+.modal-btn {
+  border: none;
+  padding: 0.45rem 0.9rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.modal-btn-dark {
+  background: var(--dark-bg);
+  color: var(--text-white);
+}
+.modal-btn-success {
+  background: var(--primary-green);
+  color: var(--text-white);
+}
+.modal-btn-danger {
+  background: var(--primary-red);
+  color: var(--text-white);
+}
+.modal-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Modal form */
+.modal-form-group {
+  margin-bottom: 1rem;
+}
+.modal-input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid var(--ui-border-color);
+  padding: 0.45rem 0.6rem;
+  background: var(--ui-bg-dropdown);
+}
+.modal-input i {
+  font-size: 1rem;
+  color: var(--text-muted);
+}
+.modal-input input {
+  border: none;
+  outline: none;
+  flex: 1;
+  font-size: 0.9rem;
+}
+
+/* Validation */
+.position-relative {
+  position: relative;
+}
+.input-error-bubble {
+  position: absolute;
+  top: 90%;
+  left: 50%;
+  transform: translateX(-50%) translateY(5px);
+  background: var(--error-bg);
+  color: var(--error-text);
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  border-radius: 0.25rem;
+  white-space: nowrap;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
